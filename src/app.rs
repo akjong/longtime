@@ -1,82 +1,91 @@
-use std::{
-    error::Error,
-    time::{Duration as StdDuration, Instant},
-};
+//! Application state and business logic
+//!
+//! This module contains the core application state and business logic
+//! for the longtime application. It manages timezone data, time offset,
+//! and application state.
 
-use chrono::{DateTime, Duration, NaiveTime, Utc};
-use chrono_tz::Tz;
+use std::rc::Rc;
 
-use crate::config::{Config, WorkHours};
+use chrono::{DateTime, Duration, Utc};
 
-// App state
+use crate::config::Config;
+
+/// The main application state
+///
+/// Contains all runtime state including timezone data,
+/// current selection, and time offset for simulation.
+#[derive(Debug)]
 pub struct App {
-    pub config: Config,
-    pub selected_index: usize,
-    pub offset_minutes: i64, // Offset from real time in minutes
-    pub last_tick: Instant,
-    pub tick_rate: StdDuration,
+    /// Configuration loaded from the TOML file
+    config: Rc<Config>,
+    /// Currently selected timezone index
+    pub selected: usize,
+    /// Time offset for simulating different times
+    pub time_offset: Duration,
 }
 
 impl App {
-    pub fn new(config: Config) -> App {
+    /// Creates a new application with the given configuration
+    ///
+    /// # Arguments
+    ///
+    /// * `config` - The configuration containing timezone information
+    pub fn new(config: Config) -> Self {
         App {
-            config,
-            selected_index: 0,
-            offset_minutes: 0,
-            last_tick: Instant::now(),
-            tick_rate: StdDuration::from_millis(250),
+            config: Rc::new(config),
+            selected: 0,
+            time_offset: Duration::zero(),
         }
     }
 
-    // Move selection up
-    pub fn previous(&mut self) {
-        if self.selected_index > 0 {
-            self.selected_index -= 1;
-        }
+    /// Returns the current configuration
+    #[allow(dead_code)]
+    pub fn config(&self) -> &Config {
+        &self.config
     }
 
-    // Move selection down
+    /// Returns the number of configured timezones
+    pub fn timezone_count(&self) -> usize {
+        self.config.timezones.len()
+    }
+
+    /// Gets the current time with the applied offset
+    #[allow(dead_code)]
+    pub fn current_time(&self) -> DateTime<Utc> {
+        Utc::now() + self.time_offset
+    }
+
+    /// Adjusts the time forward by the specified minutes
+    ///
+    /// # Arguments
+    ///
+    /// * `minutes` - Number of minutes to move forward
+    pub fn adjust_time_forward(&mut self, minutes: i64) {
+        self.time_offset += Duration::minutes(minutes);
+    }
+
+    /// Adjusts the time backward by the specified minutes
+    ///
+    /// # Arguments
+    ///
+    /// * `minutes` - Number of minutes to move backward
+    pub fn adjust_time_backward(&mut self, minutes: i64) {
+        self.time_offset -= Duration::minutes(minutes);
+    }
+
+    /// Moves the selection to the next timezone
     pub fn next(&mut self) {
-        if self.selected_index < self.config.timezones.len() - 1 {
-            self.selected_index += 1;
+        let len = self.timezone_count();
+        if len > 0 {
+            self.selected = (self.selected + 1) % len;
         }
     }
 
-    // Adjust time forward
-    pub fn adjust_time_forward(&mut self) {
-        self.offset_minutes += 30; // Adjust by 30-minute increments (was 15)
-    }
-
-    // Adjust time backward
-    pub fn adjust_time_backward(&mut self) {
-        self.offset_minutes -= 30; // Adjust by 30-minute increments (was 15)
-    }
-
-    // Get the current time for a specific timezone with the offset applied
-    pub fn get_current_time(&self, timezone_str: &str) -> Result<DateTime<Tz>, Box<dyn Error>> {
-        let tz: Tz = timezone_str.parse()?;
-        let now = Utc::now() + Duration::minutes(self.offset_minutes);
-        Ok(now.with_timezone(&tz))
-    }
-
-    // Check if a given time is within work hours
-    pub fn is_work_hours(&self, time: &DateTime<Tz>, work_hours: &WorkHours) -> bool {
-        // Parse work hours
-        let start_parts: Vec<&str> = work_hours.start.split(':').collect();
-        let end_parts: Vec<&str> = work_hours.end.split(':').collect();
-
-        let start_hour: u32 = start_parts[0].parse().unwrap_or(9);
-        let start_min: u32 = start_parts[1].parse().unwrap_or(0);
-        let end_hour: u32 = end_parts[0].parse().unwrap_or(17);
-        let end_min: u32 = end_parts[1].parse().unwrap_or(0);
-
-        let start_time = NaiveTime::from_hms_opt(start_hour, start_min, 0)
-            .expect("Invalid start time hours or minutes");
-        let end_time = NaiveTime::from_hms_opt(end_hour, end_min, 0)
-            .expect("Invalid end time hours or minutes");
-
-        let current_time = time.time();
-
-        current_time >= start_time && current_time <= end_time
+    /// Moves the selection to the previous timezone
+    pub fn previous(&mut self) {
+        let len = self.timezone_count();
+        if len > 0 {
+            self.selected = (self.selected + len - 1) % len;
+        }
     }
 }

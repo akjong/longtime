@@ -1,7 +1,15 @@
 [package]
 name = "longtime"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
+description = "Multi-timezone Time Management Tool with TUI interface"
+authors = ["Bob Liu <akagi201@gmail.com>"]
+license = "Apache-2.0"
+repository = "https://github.com/akjong/longtime"
+documentation = "https://docs.rs/longtime"
+readme = "README.md"
+keywords = ["timezone", "time", "tui", "terminal", "utility"]
+categories = ["command-line-utilities", "date-and-time"]
 
 [dependencies]
 chrono = "0.4.41"

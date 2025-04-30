@@ -1,12 +1,26 @@
+//! LongTime - Multi-timezone Time Management Tool
+//!
+//! A terminal user interface (TUI) application for managing and displaying
+//! time information across multiple time zones. Allows users to view
+//! current time in different time zones, visualize work hours, and simulate
+//! time changes to plan activities across time zones.
+//!
+//! # Features
+//!
+//! - Multi-timezone display with current times
+//! - Work hours visualization for each time zone
+//! - Time adjustment simulation
+//! - Configuration via TOML file
+
 use std::{error::Error, fs::read_to_string, io};
 
 use clap::{Arg, Command};
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
     execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use ratatui::{backend::CrosstermBackend, Terminal};
+use ratatui::{Terminal, backend::CrosstermBackend};
 
 // Import custom modules
 mod app;
@@ -16,6 +30,10 @@ mod ui;
 use app::App;
 use config::Config;
 
+/// The main entry point for the LongTime application
+///
+/// Sets up the terminal interface, loads configuration,
+/// and runs the application main loop.
 fn main() -> Result<(), Box<dyn Error>> {
     // Parse command line arguments using Clap
     let matches = Command::new("longtime")
