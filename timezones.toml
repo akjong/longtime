@@ -1,0 +1,24 @@
+[[timezones]]
+name = "Shanghai"
+timezone = "Asia/Shanghai"
+work_hours = { start = "09:00", end = "18:00" }
+
+[[timezones]]
+name = "New_York"
+timezone = "America/New_York"
+work_hours = { start = "09:00", end = "17:00" }
+
+[[timezones]]
+name = "London"
+timezone = "Europe/London"
+work_hours = { start = "09:00", end = "17:30" }
+
+[[timezones]]
+name = "Tokyo"
+timezone = "Asia/Tokyo"
+work_hours = { start = "09:30", end = "18:30" }
+
+[[timezones]]
+name = "Sydney"
+timezone = "Australia/Sydney"
+work_hours = { start = "09:00", end = "17:00" }
