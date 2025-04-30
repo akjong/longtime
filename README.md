@@ -15,11 +15,6 @@ Chinese version: [README_zh](/README_zh.md)
 - **Configuration File Support**: Easily add and manage time zones through TOML configuration file
 - **Interactive Interface**: User-friendly interface with keyboard navigation and operations
 
-## Installation Requirements
-
-- Rust programming environment (version 1.60.0 or higher)
-- Cargo package manager
-
 ## Quick Start
 
 ### Installation
@@ -98,8 +93,8 @@ After starting the program, you'll see a list containing information for all con
 |------|------|
 | `↑` (Up Arrow) | Select previous time zone |
 | `↓` (Down Arrow) | Select next time zone |
-| `←` (Left Arrow) | Adjust time backward by 15 minutes |
-| `→` (Right Arrow) | Adjust time forward by 15 minutes |
+| `←` (Left Arrow) | Adjust time backward by 30 minutes |
+| `→` (Right Arrow) | Adjust time forward by 30 minutes |
 | `q` | Exit program |
 
 ### Time Adjustment Function
@@ -165,4 +160,4 @@ A: Ensure the `timezones.toml` file is in the current directory where the progra
 A: Exit the program and restart to reset the time offset.
 
 ### Q: Can I change the time adjustment step size?
-A: Currently, the time adjustment step is fixed at 15 minutes. If you need to modify it, you can edit the `adjust_time_forward` and `adjust_time_backward` functions in the source code.
+A: Currently, the time adjustment step is fixed at 30 minutes. If you need to modify it, you can edit the `adjust_time_forward` and `adjust_time_backward` functions in the source code.
