@@ -11,6 +11,9 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     /// List of timezone configurations
     pub timezones: Vec<TimezoneConfig>,
+    /// Whether to use 12-hour format (default: false)
+    #[serde(default)]
+    pub use_12h_format: bool,
 }
 
 /// Configuration for a single timezone
@@ -52,5 +55,38 @@ impl WorkHours {
     #[allow(dead_code)]
     pub fn end_time(&self) -> Option<NaiveTime> {
         NaiveTime::parse_from_str(&self.end, "%H:%M").ok()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_work_hours_parsing() {
+        let wh = WorkHours {
+            start: "09:00".to_string(),
+            end: "17:00".to_string(),
+        };
+
+        assert_eq!(
+            wh.start_time(),
+            Some(NaiveTime::from_hms_opt(9, 0, 0).unwrap())
+        );
+        assert_eq!(
+            wh.end_time(),
+            Some(NaiveTime::from_hms_opt(17, 0, 0).unwrap())
+        );
+    }
+
+    #[test]
+    fn test_invalid_work_hours() {
+        let wh = WorkHours {
+            start: "25:00".to_string(),
+            end: "invalid".to_string(),
+        };
+
+        assert_eq!(wh.start_time(), None);
+        assert_eq!(wh.end_time(), None);
     }
 }
