@@ -29,7 +29,7 @@ use crate::{app::App, config::TimezoneConfig};
 /// # Returns
 ///
 /// * `Result<(), io::Error>` - I/O result of the terminal operations
-pub fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
+pub fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> where std::io::Error: From<<B as Backend>::Error> {
     let tick_rate = Duration::from_millis(100);
     let mut last_tick = std::time::Instant::now();
 
