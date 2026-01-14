@@ -4,6 +4,7 @@
 //! parsing of the TOML configuration file containing timezone information.
 
 use chrono::NaiveTime;
+use config::{Config as ConfigLoader, File};
 use serde::{Deserialize, Serialize};
 
 /// The main configuration struct that holds all timezone information
@@ -14,6 +15,32 @@ pub struct Config {
     /// Whether to use 12-hour format (default: false)
     #[serde(default)]
     pub use_12h_format: bool,
+}
+
+impl Config {
+    pub fn load(config_path: Option<&str>) -> Result<Self, Box<dyn std::error::Error>> {
+        let builder = ConfigLoader::builder();
+
+        // Determine the config source
+        let config_source = if let Some(path) = config_path {
+            File::with_name(path)
+        } else {
+            // Default path: ~/.config/longtime/config.toml
+            let home = dirs::home_dir().ok_or("Could not find home directory")?;
+            let default_path = home.join(".config").join("longtime").join("config.toml");
+            // If the default config file doesn't exist, we might want to handle it gracefully
+            // or let the config crate error out. Here we let it error out if not found,
+            // or we could add a default empty config or built-in defaults.
+            // For now, we assume the user wants it to fail or work as before if file is missing.
+            // Actually, File::from(path).required(true) is default.
+            File::from(default_path)
+        };
+
+        let config = builder.add_source(config_source).build()?;
+
+        let app_config: Config = config.try_deserialize()?;
+        Ok(app_config)
+    }
 }
 
 /// Configuration for a single timezone

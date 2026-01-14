@@ -12,7 +12,7 @@
 //! - Time adjustment simulation
 //! - Configuration via TOML file
 
-use std::{error::Error, fs::read_to_string, io};
+use std::{error::Error, io};
 
 use clap::{Arg, Command};
 use crossterm::{
@@ -44,32 +44,18 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .short('c')
                 .long("config")
                 .value_name("FILE")
-                .help("Sets a custom config file path")
-                .default_value("timezones.toml"),
+                .help("Sets a custom config file path (default: ~/.config/longtime/config.toml)"),
         )
         .get_matches();
 
     // Get the config file path from the command line arguments
-    let config_path = matches
-        .get_one::<String>("config")
-        .expect("Config argument should be present as it has a default value");
+    let config_path = matches.get_one::<String>("config").map(|s| s.as_str());
 
-    // Read the configuration file
-    let config_content = match read_to_string(config_path) {
-        Ok(content) => content,
-        Err(e) => {
-            println!("Error: Unable to read config file '{config_path}': {e}");
-            return Err(Box::new(e));
-        }
-    };
-
-    // Try to parse the TOML content
-    let config: Config = match toml::from_str(&config_content) {
+    let config = match Config::load(config_path) {
         Ok(config) => config,
         Err(e) => {
-            println!("Error: Failed to parse TOML config file: {e}");
-            println!("Config file content:\n{config_content}");
-            return Err(Box::new(e));
+            println!("Error: Failed to load configuration: {e}");
+            return Err(e);
         }
     };
 
