@@ -1,0 +1,13 @@
+{
+	"name": "longtime",
+	"compatibility_date": "2025-12-06",
+	"workers_dev": true,
+	"main": "worker.js",
+	"assets": {
+		"directory": "../../target/site",
+		"binding": "ASSETS"
+	},
+	"routes": [
+		{ "pattern": "longtime.longcipher.com", "custom_domain": true }
+	]
+}

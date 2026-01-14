@@ -9,6 +9,12 @@ dev-web:
 # Build Web application (release)
 build-web:
     cd bin/web && cargo leptos build --release
+    cp bin/web/index.html target/site/index.html
+    cp target/site/pkg/longtime.wasm target/site/pkg/longtime_bg.wasm
+
+# Deploy Web application to Cloudflare Worker
+deploy-worker: build-web
+    cd bin/web && npx wrangler deploy
 
 # Build all workspace crates
 build:

@@ -2,5 +2,8 @@
   "private": true,
   "workspaces": [
     "bin/web"
-  ]
+  ],
+  "devDependencies": {
+    "playwright": "^1.57.0"
+  }
 }
