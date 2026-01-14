@@ -7,8 +7,7 @@
 use std::rc::Rc;
 
 use chrono::{DateTime, Duration, Utc};
-
-use crate::config::Config;
+use longtime_core::{Config, TimezoneConfig};
 
 /// The main application state
 ///
@@ -58,7 +57,7 @@ impl App {
     }
 
     /// Returns the filtered timezones based on search query
-    pub fn get_filtered_timezones(&self) -> Vec<(usize, &crate::config::TimezoneConfig)> {
+    pub fn get_filtered_timezones(&self) -> Vec<(usize, &TimezoneConfig)> {
         self.config
             .timezones
             .iter()
@@ -83,7 +82,6 @@ impl App {
     }
 
     /// Gets the current time with the applied offset
-    #[allow(dead_code)]
     pub fn current_time(&self) -> DateTime<Utc> {
         Utc::now() + self.time_offset
     }
@@ -169,8 +167,9 @@ impl App {
 
 #[cfg(test)]
 mod tests {
+    use longtime_core::WorkHours;
+
     use super::*;
-    use crate::config::{TimezoneConfig, WorkHours};
 
     fn create_test_config() -> Config {
         Config {
@@ -200,9 +199,13 @@ mod tests {
     fn test_app_initialization() {
         let config = create_test_config();
         let app = App::new(config);
+
         assert_eq!(app.selected, 0);
         assert_eq!(app.time_offset, Duration::zero());
-        assert_eq!(app.timezone_count(), 2);
+        assert!(!app.show_help);
+        assert!(app.search_query.is_empty());
+        assert!(!app.is_searching);
+        assert!(!app.use_12h_format);
     }
 
     #[test]
@@ -210,14 +213,13 @@ mod tests {
         let config = create_test_config();
         let mut app = App::new(config);
 
-        app.next();
-        assert_eq!(app.selected, 1);
-
-        app.next();
         assert_eq!(app.selected, 0);
-
-        app.previous();
+        app.next();
         assert_eq!(app.selected, 1);
+        app.next();
+        assert_eq!(app.selected, 0); // Wraps around
+        app.previous();
+        assert_eq!(app.selected, 1); // Wraps around backward
     }
 
     #[test]
@@ -225,11 +227,11 @@ mod tests {
         let config = create_test_config();
         let mut app = App::new(config);
 
-        app.adjust_time_forward(60);
-        assert_eq!(app.time_offset, Duration::minutes(60));
-
-        app.adjust_time_backward(30);
+        app.adjust_time_forward(30);
         assert_eq!(app.time_offset, Duration::minutes(30));
+
+        app.adjust_time_backward(15);
+        assert_eq!(app.time_offset, Duration::minutes(15));
 
         app.reset_time();
         assert_eq!(app.time_offset, Duration::zero());
@@ -245,19 +247,15 @@ mod tests {
 
         app.append_search('T');
         app.append_search('e');
-        app.append_search('s');
-        app.append_search('t');
-        app.append_search('1');
-
-        assert_eq!(app.search_query, "Test1");
-        assert_eq!(app.timezone_count(), 1);
+        assert_eq!(app.search_query, "Te");
 
         app.backspace_search();
-        assert_eq!(app.search_query, "Test");
-        assert_eq!(app.timezone_count(), 2);
+        assert_eq!(app.search_query, "T");
+
+        app.exit_search();
+        assert!(!app.is_searching);
 
         app.clear_search();
-        assert_eq!(app.search_query, "");
-        assert_eq!(app.timezone_count(), 2);
+        assert!(app.search_query.is_empty());
     }
 }

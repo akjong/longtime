@@ -5,9 +5,10 @@
 
 use std::{io, str::FromStr, time::Duration};
 
-use chrono::{DateTime, Offset, Utc};
+use chrono::Offset;
 use chrono_tz::Tz;
 use crossterm::event::{self, Event, KeyCode};
+use longtime_core::is_work_hours;
 use ratatui::{
     Frame, Terminal,
     backend::Backend,
@@ -17,7 +18,7 @@ use ratatui::{
     widgets::{Block, Borders, Cell, Clear, Paragraph, Row, Table},
 };
 
-use crate::{app::App, config::TimezoneConfig};
+use crate::app::App;
 
 /// Runs the application's main loop
 ///
@@ -366,40 +367,12 @@ fn render_footer(f: &mut Frame, area: Rect) {
     f.render_widget(footer, area);
 }
 
-/// Determines if a given time is within work hours
-///
-/// # Arguments
-///
-/// * `now` - Current time to check
-/// * `timezone_config` - Timezone configuration with work hours
-///
-/// # Returns
-///
-/// * `bool` - True if time is within work hours, false otherwise
-#[allow(dead_code)]
-fn is_work_hours(now: DateTime<Utc>, timezone_config: &TimezoneConfig) -> bool {
-    // Parse the timezone
-    if let Ok(tz) = Tz::from_str(&timezone_config.timezone) {
-        let local_time = now.with_timezone(&tz);
-        let naive_time = local_time.time();
-
-        if let (Some(start), Some(end)) = (
-            timezone_config.work_hours.start_time(),
-            timezone_config.work_hours.end_time(),
-        ) {
-            return naive_time >= start && naive_time <= end;
-        }
-    }
-
-    false
-}
-
 #[cfg(test)]
 mod tests {
-    use chrono::TimeZone;
+    use chrono::{TimeZone, Utc};
+    use longtime_core::{TimezoneConfig, WorkHours};
 
     use super::*;
-    use crate::config::WorkHours;
 
     #[test]
     fn test_is_work_hours() {

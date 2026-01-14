@@ -1,0 +1,23 @@
+[package]
+name = "longtime-tui"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Multi-timezone Time Management Tool with TUI interface"
+keywords = ["timezone", "time", "tui", "terminal", "utility"]
+categories = ["command-line-utilities", "date-and-time"]
+
+[[bin]]
+name = "longtime"
+path = "src/main.rs"
+
+[dependencies]
+chrono.workspace = true
+chrono-tz.workspace = true
+clap = { workspace = true, features = ["derive"] }
+config = { workspace = true, features = ["toml"] }
+crossterm.workspace = true
+dirs.workspace = true
+longtime-core = { workspace = true }
+ratatui.workspace = true

@@ -1,0 +1,427 @@
+/* ===== Terminal/Cyberpunk Theme - Pure CSS (No Tailwind Processing) ===== */
+
+/* CSS Custom Properties */
+:root {
+    /* Primary - Matrix Green */
+    --color-primary: #00ff66;
+    --color-primary-dim: #00994d;
+    --color-primary-rgb: 0, 255, 102;
+    
+    /* Secondary - Cyan accent */
+    --color-secondary: #00cccc;
+    
+    /* Status colors */
+    --color-working: #00ff66;
+    --color-off: #ff6655;
+    
+    /* Dark mode surfaces (default) */
+    --color-surface: #0d1117;
+    --color-surface-alt: #161b22;
+    --color-surface-card: #21262d;
+    
+    /* Text colors */
+    --color-text-primary: #e6edf3;
+    --color-text-secondary: #8b949e;
+    --color-text-muted: #6e7681;
+    
+    /* Border */
+    --color-border: #30363d;
+    
+    /* Font */
+    --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    
+    /* Border radius */
+    --radius-card: 0.5rem;
+    --radius-btn: 0.375rem;
+    
+    /* Shadows */
+    --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 255, 100, 0.05);
+    --shadow-glow: 0 0 20px rgba(0, 255, 100, 0.15);
+}
+
+/* Light mode */
+body.light {
+    --color-surface: #f6f8fa;
+    --color-surface-alt: #ffffff;
+    --color-surface-card: #ffffff;
+    --color-text-primary: #24292f;
+    --color-text-secondary: #57606a;
+    --color-text-muted: #6e7681;
+    --color-border: #d0d7de;
+    --color-primary: #00994d;
+    --color-primary-dim: #006633;
+    --color-primary-rgb: 0, 153, 77;
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 10px rgba(0, 153, 77, 0.1);
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Layout Utilities ===== */
+.min-h-screen { min-height: 100vh; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1 1 0%; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.grid { display: grid; }
+
+/* ===== Spacing ===== */
+.p-1\.5 { padding: 0.375rem; }
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-3 { margin-top: 0.75rem; }
+.pt-4 { padding-top: 1rem; }
+
+/* ===== Sizing ===== */
+.w-full { width: 100%; }
+.max-w-md { max-width: 28rem; }
+.min-w-28 { min-width: 7rem; }
+
+/* ===== Typography ===== */
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+.font-mono { font-family: var(--font-mono); }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.tracking-wider { letter-spacing: 0.05em; }
+.text-center { text-align: center; }
+
+/* ===== Colors ===== */
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-alt { background-color: var(--color-surface-alt); }
+.text-primary { color: var(--color-primary); }
+.text-text-primary { color: var(--color-text-primary); }
+.text-text-secondary { color: var(--color-text-secondary); }
+.text-working { color: var(--color-working); }
+.text-off { color: var(--color-off); }
+
+/* ===== Position ===== */
+.sticky { position: sticky; }
+.fixed { position: fixed; }
+.relative { position: relative; }
+.inset-0 { inset: 0; }
+.top-0 { top: 0; }
+.z-10 { z-index: 10; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+
+/* ===== Border ===== */
+.border { border-width: 1px; border-style: solid; }
+.border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+.border-transparent { border-color: transparent; }
+.rounded { border-radius: var(--radius-btn); }
+.rounded-lg { border-radius: var(--radius-card); }
+
+/* ===== Container ===== */
+.container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 1280px;
+}
+
+/* ===== Visibility & Transitions ===== */
+.hidden { display: none; }
+.opacity-0 { opacity: 0; }
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
+.transition-colors { transition: color 0.15s, background-color 0.15s, border-color 0.15s; }
+.transition-opacity { transition: opacity 0.15s; }
+.backdrop-blur-sm { backdrop-filter: blur(4px); }
+
+/* ===== Scanline overlay effect ===== */
+.scanlines::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 100, 0.02) 2px,
+        rgba(0, 255, 100, 0.02) 4px
+    );
+    z-index: 100;
+    opacity: 0.5;
+}
+
+body.light .scanlines::after {
+    opacity: 0.1;
+}
+
+/* ===== Terminal cursor blink ===== */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.cursor-blink::after {
+    content: "_";
+    animation: blink 1s step-end infinite;
+    color: var(--color-primary);
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--color-primary-rgb), 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.5);
+}
+
+/* ===== Focus ===== */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ===== Buttons ===== */
+button {
+    cursor: pointer;
+    user-select: none;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-terminal {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    transition: all 0.15s;
+}
+
+.btn-terminal:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-primary {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: rgba(var(--color-primary-rgb), 0.15);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    transition: all 0.15s;
+}
+
+.btn-primary:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.25);
+    box-shadow: var(--shadow-glow);
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    border-radius: var(--radius-btn);
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: none;
+    transition: all 0.15s;
+}
+
+.btn-icon:hover {
+    color: var(--color-primary);
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* ===== Cards ===== */
+.card-terminal {
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s;
+}
+
+.card-terminal:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-glow);
+}
+
+/* ===== Inputs ===== */
+.input-terminal {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-btn);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    outline: none;
+    transition: all 0.15s;
+}
+
+.input-terminal::placeholder {
+    color: var(--color-text-muted);
+}
+
+.input-terminal:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
+}
+
+/* ===== Time display ===== */
+.time-display {
+    font-size: 2.25rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
+}
+
+body.light .time-display {
+    text-shadow: none;
+}
+
+/* ===== Status indicator ===== */
+.status-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+body.light .status-dot {
+    box-shadow: none;
+}
+
+/* ===== Modal ===== */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 40;
+}
+
+body.light .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+    background-color: var(--color-surface-alt);
+    border-radius: var(--radius-card);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--color-border);
+}
+
+/* ===== Theme toggle animation ===== */
+@keyframes rotate-sun {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.theme-icon {
+    transition: transform 0.3s;
+}
+
+.theme-icon:hover {
+    animation: rotate-sun 2s linear infinite;
+}
+
+/* ===== Text glow ===== */
+.text-glow {
+    text-shadow: 0 0 10px currentColor;
+}
+
+body.light .text-glow {
+    text-shadow: none;
+}
+
+/* ===== Terminal prompt prefix ===== */
+.terminal-prompt::before {
+    content: "> ";
+    color: var(--color-primary);
+    opacity: 0.6;
+}
+
+/* ===== Timezone Grid ===== */
+.timezone-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .timezone-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sm\:inline { display: inline; }
+    .sm\:gap-4 { gap: 1rem; }
+}
+
+@media (min-width: 1024px) {
+    .timezone-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+

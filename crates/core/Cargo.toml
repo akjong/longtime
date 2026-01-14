@@ -1,0 +1,15 @@
+[package]
+name = "longtime-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Core business logic for LongTime multi-timezone time manager"
+
+[dependencies]
+chrono.workspace = true
+chrono-tz.workspace = true
+serde = { workspace = true, features = ["derive"] }
+
+[dev-dependencies]
+serde_json.workspace = true

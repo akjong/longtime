@@ -22,13 +22,12 @@ use crossterm::{
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 
-// Import custom modules
 mod app;
-mod config;
+mod config_loader;
 mod ui;
 
 use app::App;
-use config::Config;
+use config_loader::load_config;
 
 /// The main entry point for the LongTime application
 ///
@@ -51,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Get the config file path from the command line arguments
     let config_path = matches.get_one::<String>("config").map(|s| s.as_str());
 
-    let config = match Config::load(config_path) {
+    let config = match load_config(config_path) {
         Ok(config) => config,
         Err(e) => {
             println!("Error: Failed to load configuration: {e}");

@@ -1,22 +1,47 @@
-[package]
-name = "longtime"
+[workspace]
+members = ["crates/*", "bin/*"]
+resolver = "3"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
-description = "Multi-timezone Time Management Tool with TUI interface"
 authors = ["Bob Liu <akagi201@gmail.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/akjong/longtime"
 documentation = "https://docs.rs/longtime"
 readme = "README.md"
-keywords = ["timezone", "time", "tui", "terminal", "utility"]
-categories = ["command-line-utilities", "date-and-time"]
 
-[dependencies]
+[workspace.dependencies]
+axum = "0.8.8"
+longtime-core = { path = "crates/core" }
+tokio = "1.49.0"
+tower-http = "0.6.8"
+wasm-bindgen-futures = "0.4.56"
+
+# Core
 chrono = "0.4.42"
 chrono-tz = "0.10.4"
-clap = { version = "4.5.54", features = ["derive"] }
-config = { version = "0.15.19", features = ["toml"] }
+serde = "1.0.228"
+
+# TUI
+clap = "4.5.54"
+config = "0.15.19"
 crossterm = "0.29.0"
 dirs = "6.0.0"
 ratatui = "0.30.0"
-serde = { version = "1.0.228", features = ["derive"] }
+
+# Web (for future use)
+base64 = "0.22.1"
+console_error_panic_hook = "0.1.7"
+gloo-storage = "0.3.0"
+gloo-timers = "0.3.0"
+leptos = "0.8.15"
+leptos_meta = "0.8"
+leptos_router = "0.8.11"
+serde_json = "1.0.149"
+wasm-bindgen = "0.2.106"
+web-sys = "0.3.83"
+
+# Error handling
+eyre = "0.6.12"
+thiserror = "2.0.17"

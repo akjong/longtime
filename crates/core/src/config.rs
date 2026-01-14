@@ -1,14 +1,13 @@
-//! Configuration handling for timezone data
+//! Configuration data structures for timezone management
 //!
-//! This module defines the configuration structure and handles
-//! parsing of the TOML configuration file containing timezone information.
+//! This module defines the configuration structures used to represent
+//! timezone information and work hours settings.
 
 use chrono::NaiveTime;
-use config::{Config as ConfigLoader, File};
 use serde::{Deserialize, Serialize};
 
 /// The main configuration struct that holds all timezone information
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Config {
     /// List of timezone configurations
     pub timezones: Vec<TimezoneConfig>,
@@ -17,34 +16,42 @@ pub struct Config {
     pub use_12h_format: bool,
 }
 
-impl Config {
-    pub fn load(config_path: Option<&str>) -> Result<Self, Box<dyn std::error::Error>> {
-        let builder = ConfigLoader::builder();
-
-        // Determine the config source
-        let config_source = if let Some(path) = config_path {
-            File::with_name(path)
-        } else {
-            // Default path: ~/.config/longtime/config.toml
-            let home = dirs::home_dir().ok_or("Could not find home directory")?;
-            let default_path = home.join(".config").join("longtime").join("config.toml");
-            // If the default config file doesn't exist, we might want to handle it gracefully
-            // or let the config crate error out. Here we let it error out if not found,
-            // or we could add a default empty config or built-in defaults.
-            // For now, we assume the user wants it to fail or work as before if file is missing.
-            // Actually, File::from(path).required(true) is default.
-            File::from(default_path)
-        };
-
-        let config = builder.add_source(config_source).build()?;
-
-        let app_config: Config = config.try_deserialize()?;
-        Ok(app_config)
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            timezones: vec![
+                TimezoneConfig {
+                    name: "Shanghai".to_string(),
+                    timezone: "Asia/Shanghai".to_string(),
+                    work_hours: WorkHours {
+                        start: "09:00".to_string(),
+                        end: "18:00".to_string(),
+                    },
+                },
+                TimezoneConfig {
+                    name: "London".to_string(),
+                    timezone: "Europe/London".to_string(),
+                    work_hours: WorkHours {
+                        start: "09:00".to_string(),
+                        end: "17:30".to_string(),
+                    },
+                },
+                TimezoneConfig {
+                    name: "New York".to_string(),
+                    timezone: "America/New_York".to_string(),
+                    work_hours: WorkHours {
+                        start: "09:00".to_string(),
+                        end: "17:00".to_string(),
+                    },
+                },
+            ],
+            use_12h_format: false,
+        }
     }
 }
 
 /// Configuration for a single timezone
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct TimezoneConfig {
     /// Display name for the timezone
     pub name: String,
@@ -55,7 +62,7 @@ pub struct TimezoneConfig {
 }
 
 /// Work hours configuration for a timezone
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct WorkHours {
     /// Start time of work hours (format: "HH:MM")
     pub start: String,
@@ -69,7 +76,6 @@ impl WorkHours {
     /// # Returns
     ///
     /// * `Option<NaiveTime>` - The parsed time or None if parsing fails
-    #[allow(dead_code)]
     pub fn start_time(&self) -> Option<NaiveTime> {
         NaiveTime::parse_from_str(&self.start, "%H:%M").ok()
     }
@@ -79,7 +85,6 @@ impl WorkHours {
     /// # Returns
     ///
     /// * `Option<NaiveTime>` - The parsed time or None if parsing fails
-    #[allow(dead_code)]
     pub fn end_time(&self) -> Option<NaiveTime> {
         NaiveTime::parse_from_str(&self.end, "%H:%M").ok()
     }
@@ -115,5 +120,23 @@ mod tests {
 
         assert_eq!(wh.start_time(), None);
         assert_eq!(wh.end_time(), None);
+    }
+
+    #[test]
+    fn test_default_config() {
+        let config = Config::default();
+        assert_eq!(config.timezones.len(), 3);
+        assert!(!config.use_12h_format);
+        assert_eq!(config.timezones[0].name, "Shanghai");
+        assert_eq!(config.timezones[1].name, "London");
+        assert_eq!(config.timezones[2].name, "New York");
+    }
+
+    #[test]
+    fn test_config_serialization_roundtrip() {
+        let config = Config::default();
+        let json = serde_json::to_string(&config).unwrap();
+        let deserialized: Config = serde_json::from_str(&json).unwrap();
+        assert_eq!(config, deserialized);
     }
 }

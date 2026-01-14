@@ -2,7 +2,7 @@
 
 Multi-timezone Time Management Tool
 
-A command-line terminal user interface (TUI) tool developed with Rust and ratatui library for managing and displaying time information across multiple time zones.
+A modern multi-timezone time management application available as both a **Terminal UI (TUI)** and a **Web Application**, built with Rust.
 
 Chinese version: [README_zh](/README_zh.md)
 
@@ -12,34 +12,76 @@ Chinese version: [README_zh](/README_zh.md)
 - **Work Hours Display**: Show configured work time ranges for each time zone
 - **Work Status Indicator**: Visually indicate whether each time zone is within working hours
 - **Time Adjustment**: Manually adjust time in any time zone, with other time zones updating synchronously
-- **Configuration File Support**: Easily add and manage time zones through TOML configuration file
-- **Interactive Interface**: User-friendly interface with keyboard navigation and operations
+- **Two Interfaces**: Choose between Terminal UI or Web Application
+- **Configuration Sharing**: Share timezone configurations via URL (Web version)
+- **Keyboard Shortcuts**: Quick navigation and time adjustment
 
 ## Quick Start
 
+### Prerequisites
+
+- Rust 1.80+ with `wasm32-unknown-unknown` target
+- [cargo-leptos](https://github.com/leptos-rs/cargo-leptos) (for Web version)
+- [Bun](https://bun.sh/) (for Tailwind CSS)
+
 ### Installation
 
-1. Compile the project:
-
 ```bash
-cargo build --release
+# Clone the repository
+git clone https://github.com/akjong/longtime.git
+cd longtime
+
+# Install dependencies for Web version
+bun install
+cargo install cargo-leptos
+rustup target add wasm32-unknown-unknown
 ```
 
-2. Run the program:
+### Running the TUI Version
 
 ```bash
-cargo run --release
+# Using Just
+just dev-tui
+
+# Or directly with cargo
+cargo run -p longtime-tui -- -c timezones.toml
 ```
 
-Or directly run the compiled binary:
+### Running the Web Version
 
 ```bash
-./target/release/time
+# Using Just (recommended)
+just dev-web
+
+# Or directly with cargo-leptos
+cd bin/web && cargo leptos watch
 ```
+
+Then open **<http://127.0.0.1:3000**> in your browser.
+
+### Building for Production
+
+```bash
+# Build all workspace crates
+just build
+
+# Build Web version for production
+just build-web
+```
+
+### Available Commands
+
+```bash
+just help  # Show all available commands
+```
+
+---
+
+## TUI Version
 
 ### Configuration
 
-The program uses a `timezones.toml` configuration file to define time zone information. This file should be placed in the current directory where the program is executed.
+The TUI version uses a `timezones.toml` configuration file:
 
 Example configuration file:
 
@@ -73,6 +115,7 @@ work_hours = { start = "09:00", end = "17:00" }
 ```
 
 Configuration item description:
+
 - `name`: Time zone display name
 - `timezone`: Time zone identifier (conforming to IANA time zone database format)
 - `work_hours`: Work time range, including `start` (start time) and `end` (end time)
@@ -82,6 +125,7 @@ Configuration item description:
 ### Interface Navigation
 
 After starting the program, you'll see a list containing information for all configured time zones. Each time zone entry displays:
+
 - Time zone name
 - Current time (format: YYYY-MM-DD HH:MM:SS)
 - Work hours range
@@ -97,19 +141,43 @@ After starting the program, you'll see a list containing information for all con
 | `→` (Right Arrow) | Adjust time forward by 30 minutes |
 | `q` | Exit program |
 
-### Time Adjustment Function
+---
 
-When you adjust time using the left and right arrow keys, time in all time zones updates synchronously. This feature allows you to:
+## Web Version
 
-1. View the status of different time zones at specific time points
-2. Plan meetings or activities across time zones
-3. Estimate work time overlap between different time zones
+The Web version provides a modern, responsive interface built with **Leptos** and **TailwindCSS v4**.
 
-## Customization and Extension
+### Features
 
-### Adding New Time Zones
+- **Real-time Updates**: Time updates every second automatically
+- **12/24 Hour Toggle**: Switch between time formats
+- **Add/Edit/Delete Timezones**: Manage timezones directly in the browser
+- **Time Travel**: Adjust displayed time with +/- 15min or +/- 1hr buttons
+- **Play/Pause**: Freeze time display for comparison
+- **URL Sharing**: Generate shareable links with your configuration
+- **LocalStorage**: Configuration persists across browser sessions
 
-To add a new time zone, simply add a new `[[timezones]]` entry in the `timezones.toml` file:
+### Keyboard Shortcuts (Web)
+
+| Key | Function |
+|------|------|
+| `←` or `h` | Adjust time backward by 15 minutes |
+| `→` or `l` | Adjust time forward by 15 minutes |
+| `r` | Reset time to current |
+| `Space` | Toggle play/pause |
+| `Escape` | Close modal dialog |
+
+### URL Sharing
+
+Click the **Share** button to copy a URL with your current configuration. Send it to teammates to share your timezone setup instantly.
+
+---
+
+## Configuration Format
+
+### TUI Configuration (TOML)
+
+The TUI version reads from `timezones.toml`. Add new timezones like this:
 
 ```toml
 [[timezones]]
@@ -118,20 +186,13 @@ timezone = "Asia/Singapore"
 work_hours = { start = "09:00", end = "18:00" }
 ```
 
-### Modifying Work Hours
+### Web Configuration
 
-To modify the work hours of an existing time zone, update the `work_hours` value for the corresponding time zone entry:
+The Web version stores configuration in **LocalStorage** and supports URL sharing. Configuration is managed through the UI - no file editing required.
 
-```toml
-[[timezones]]
-name = "London"
-timezone = "Europe/London"
-work_hours = { start = "08:30", end = "16:30" }  # Updated work hours
-```
+### Supported Time Zones
 
-### Supported Time Zone Formats
-
-This tool uses the `chrono-tz` library and supports all time zone identifiers in the IANA time zone database. Common time zone identifiers include:
+This tool uses the `chrono-tz` library and supports all IANA time zone identifiers:
 
 - `Asia/Shanghai` (China Beijing Time)
 - `America/New_York` (US Eastern Time)
@@ -140,24 +201,50 @@ This tool uses the `chrono-tz` library and supports all time zone identifiers in
 - `Australia/Sydney` (Australia Sydney Time)
 - `Europe/Paris` (France Paris Time)
 
-A complete list of time zones can be found [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+Full list: [IANA Time Zone Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+
+---
 
 ## Technical Architecture
 
-This tool uses the following Rust libraries:
+### Workspace Structure
 
-- **ratatui**: For creating terminal user interfaces
-- **crossterm**: For handling terminal events and control
-- **chrono** and **chrono-tz**: For time zone and time calculations
-- **serde** and **toml**: For configuration file parsing
+```text
+longtime/
+├── crates/core/       # Shared business logic (config, time calculations)
+├── bin/tui/           # Terminal UI application (ratatui)
+├── bin/web/           # Web application (Leptos + Tailwind)
+└── timezones.toml     # TUI configuration file
+```
 
-## Frequently Asked Questions
+### Core Libraries
 
-### Q: The program won't start, showing configuration file errors?
-A: Ensure the `timezones.toml` file is in the current directory where the program is executed and follows the correct TOML syntax format.
+| Library | Purpose |
+|---------|---------|
+| **leptos** | Reactive web framework (CSR mode) |
+| **ratatui** | Terminal UI framework |
+| **chrono-tz** | Timezone calculations |
+| **gloo-storage** | LocalStorage for Web |
+| **tailwindcss v4** | CSS styling for Web |
 
-### Q: How to restore to the real current time?
-A: Exit the program and restart to reset the time offset.
+---
 
-### Q: Can I change the time adjustment step size?
-A: Currently, the time adjustment step is fixed at 30 minutes. If you need to modify it, you can edit the `adjust_time_forward` and `adjust_time_backward` functions in the source code.
+## FAQ
+
+### Q: The TUI won't start, showing configuration file errors?
+
+A: Ensure `timezones.toml` is in the current directory and follows valid TOML syntax.
+
+### Q: How to restore to current time?
+
+A: **TUI**: Restart the program. **Web**: Click the Reset button or press `r`.
+
+### Q: How do I share my timezone setup?
+
+A: **Web version only**: Click the Share button to copy a URL with your configuration encoded.
+
+---
+
+## License
+
+MIT

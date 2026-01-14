@@ -1,0 +1,64 @@
+[package]
+name = "longtime-web"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Multi-timezone Time Management Web Application"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+longtime-core = { workspace = true }
+leptos = { workspace = true, features = ["csr"] }
+chrono = { workspace = true, features = ["wasmbind"] }
+serde_json.workspace = true
+base64.workspace = true
+gloo-storage.workspace = true
+gloo-timers = { workspace = true, features = ["futures"] }
+web-sys = { workspace = true, features = [
+    "Clipboard",
+    "EventTarget",
+    "HtmlElement",
+    "HtmlInputElement",
+    "HtmlSelectElement",
+    "KeyboardEvent",
+    "Location",
+    "Navigator",
+    "Window",
+] }
+wasm-bindgen.workspace = true
+wasm-bindgen-futures = { workspace = true }
+console_error_panic_hook.workspace = true
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+axum = { workspace = true }
+tower-http = { workspace = true, features = ["fs"] }
+tokio = { workspace = true, features = ["full"] }
+
+[package.metadata.leptos]
+# Name of the output binary
+output-name = "longtime"
+
+# Site root for the output
+site-root = "target/site"
+
+# The site-root relative to the pkg dir
+site-pkg-dir = "pkg"
+
+# The source style file. If it ends with .sass or .scss then it will be compiled by dart-sass into .css.
+style-file = "style/main.css"
+
+# The assets to be copied to the site-root
+assets-dir = "../../assets"
+
+# The IP and port (default: 127.0.0.1:3000) where the server serves the content
+site-addr = "127.0.0.1:3000"
+
+# The port to use for automatic reload monitoring
+reload-port = 3001
+
+# Build features
+bin-features = []
+lib-features = []

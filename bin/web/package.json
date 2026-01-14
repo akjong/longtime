@@ -1,0 +1,11 @@
+{
+  "name": "longtime-web",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i style/main.css -o target/site/pkg/main.css --minify",
+    "watch:css": "tailwindcss -i style/main.css -o target/site/pkg/main.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.18"
+  }
+}
