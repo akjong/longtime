@@ -77,5 +77,7 @@ Preferred defaults: clap, config, eyre, proptest, serde, thiserror, tokio, traci
 - Build, serve, and bundle through `cargo-leptos` (`just fe-dev`, `just fe-build`); NEVER use `trunk`.
 - Leptos configuration lives in the crate-local `[package.metadata.leptos]` block; change it there, not in a global file.
 - `leptosfmt` runs inside `just format` and `just lint`; never hand-format a `view!` block.
+- Styling default when unspecified: `singlestage` with Tailwind CSS v4, CSS-first configuration (`@theme` in CSS); never `tailwind.config.js`.
 - Reactivity: `RwSignal` for state, `Memo` for derived values, `Effect` for side effects, `StoredValue` for non-reactive storage. Read a signal by calling it (`count()`).
+- Use `move ||` for a dynamic reactive attribute or value.
 - Server calls go through `#[server]`, routes through `path!`, and server mutations through `Action` so the client invalidates automatically.
