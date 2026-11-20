@@ -53,7 +53,7 @@ temp file and run `cargo mutants --in-diff <diff-file>` for that file only, with
 - Sub-crates inherit `version`/`edition`/`authors`/`license`/`rust-version`/`repository` via `workspace = true`. Inheritance failures are fixed by `just fix` (cargo workspace-inheritance-check).
 - Workspace MSRV is Rust 1.100. Prefer newly stabilized features and APIs over older workarounds; do not add feature gates for anything already stable in 1.100.
 - `[workspace.lints.cargo]` enables Cargo's native `unused_dependencies` lint, the only unused-dependency check; do not reintroduce a third-party checker. Its level is `warn`, and `.cargo/config.toml` sets `build.warnings = "deny"`, so a finding fails the gate.
-- `.cargo/config.toml` sets resolver `incompatible-rust-versions = "fallback"` (MSRV-aligned resolution) and `registry.global-min-publish-age = "5 days"` (Rust 1.100 dependency cooldown); keep both.
+- `.cargo/config.toml` sets resolver `incompatible-rust-versions = "fallback"` (MSRV-aligned resolution) and `registry.global-min-publish-age = "2 days"` (Rust 1.100 dependency cooldown); keep both.
 - `.cargo/config.toml` does not set a `rustc-wrapper`. If you add one, unset it (`RUSTC_WRAPPER=`) whenever clippy runs, because the wrapper breaks `clippy --fix`.
 - `.rustfmt.toml` enables unstable rustfmt options, so formatting runs on nightly: `cargo +nightly fmt`. Never hand-format around a `cargo fmt` diff.
 - Lint policy lives in `[workspace.lints]` in the root `Cargo.toml`. Prefer `#[expect(lint, reason = "...")]` over `#[allow]`; a bare `#[allow]` silences the lint for the whole item and hides later drift.
