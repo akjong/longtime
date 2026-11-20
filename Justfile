@@ -38,7 +38,6 @@ lint:
     cargo +nightly fmt --all -- --check
     leptosfmt . --check
     cargo +nightly clippy --workspace -- -D warnings -A clippy::derive_partial_eq_without_eq -D clippy::unwrap_used -D clippy::uninlined_format_args
-    cargo machete
     just check-mutation-scope
 
 # Run all tests
@@ -194,7 +193,6 @@ docs:
 # Install all required development tools
 setup:
   cargo install cargo-mutants
-  cargo install cargo-machete
   cargo install cargo-sort
   cargo install typos-cli
   cargo install rumdl
@@ -222,10 +220,6 @@ test-nextest:
 # Run miri on unsafe code
 miri:
   cargo +nightly miri test --all-features
-
-# Check for unused dependencies
-unused-deps:
-  cargo shear --check
 
 # Update all dependencies
 update-deps:

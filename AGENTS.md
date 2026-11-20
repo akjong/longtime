@@ -50,11 +50,14 @@ temp file and run `cargo mutants --in-diff <diff-file>` for that file only, with
 ## Workspace rules
 
 - Never hand-type dependency versions. Add per-crate deps with `cargo add <crate> -p <crate>`. Shared deps go into root `[workspace.dependencies]` — numeric versions only, no features — and are referenced with `dep = { workspace = true }`.
-- Sub-crates inherit `version`/`edition`/`license`/`repository` via `workspace = true`. Inheritance failures are fixed by `just fix` (cargo workspace-inheritance-check).
+- Sub-crates inherit `version`/`edition`/`authors`/`license`/`rust-version`/`repository` via `workspace = true`. Inheritance failures are fixed by `just fix` (cargo workspace-inheritance-check).
+- Workspace MSRV is Rust 1.100. Prefer newly stabilized features and APIs over older workarounds; do not add feature gates for anything already stable in 1.100.
+- `[workspace.lints.cargo]` enables Cargo's native `unused_dependencies` lint, the only unused-dependency check; do not reintroduce a third-party checker. Its level is `warn`, and `.cargo/config.toml` sets `build.warnings = "deny"`, so a finding fails the gate.
+- `.cargo/config.toml` sets resolver `incompatible-rust-versions = "fallback"` (MSRV-aligned resolution) and `registry.global-min-publish-age = "5 days"` (Rust 1.100 dependency cooldown); keep both.
 - `.cargo/config.toml` does not set a `rustc-wrapper`. If you add one, unset it (`RUSTC_WRAPPER=`) whenever clippy runs, because the wrapper breaks `clippy --fix`.
 - `.rustfmt.toml` enables unstable rustfmt options, so formatting runs on nightly: `cargo +nightly fmt`. Never hand-format around a `cargo fmt` diff.
 - Lint policy lives in `[workspace.lints]` in the root `Cargo.toml`. Prefer `#[expect(lint, reason = "...")]` over `#[allow]`; a bare `#[allow]` silences the lint for the whole item and hides later drift.
-- `cargo sort` keeps the dependency lists ordered; cargo machete reports unused dependencies. Both run through `just lint`.
+- `cargo sort` keeps the dependency lists ordered; Cargo's native `unused_dependencies` lint reports unused dependencies. Both run through `just lint`.
 
 ## Dependency choices
 

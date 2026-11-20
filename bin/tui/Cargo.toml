@@ -7,6 +7,8 @@ license.workspace = true
 description = "Multi-timezone Time Management Tool with TUI interface"
 keywords = ["timezone", "time", "tui", "terminal", "utility"]
 categories = ["command-line-utilities", "date-and-time"]
+rust-version.workspace = true
+repository.workspace = true
 
 [[bin]]
 name = "longtime"
@@ -21,3 +23,6 @@ crossterm.workspace = true
 dirs.workspace = true
 longtime-core = { workspace = true }
 ratatui.workspace = true
+
+[lints]
+workspace = true

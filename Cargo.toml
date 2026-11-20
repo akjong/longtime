@@ -8,8 +8,7 @@ edition = "2024"
 authors = ["Bob Liu <akagi201@gmail.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/akjong/longtime"
-documentation = "https://docs.rs/longtime"
-readme = "README.md"
+rust-version = "1.100"
 
 [workspace.dependencies]
 axum = "0.8.8"
@@ -30,18 +29,20 @@ crossterm = "0.29.0"
 dirs = "6.0.0"
 ratatui = "0.30.0"
 
-# Web (for future use)
+# Web
 base64 = "0.22.1"
 console_error_panic_hook = "0.1.7"
 gloo-storage = "0.3.0"
 gloo-timers = "0.3.0"
 leptos = "0.8.15"
-leptos_meta = "0.8"
-leptos_router = "0.8.11"
 serde_json = "1.0.149"
 wasm-bindgen = "0.2.106"
 web-sys = "0.3.83"
 
-# Error handling
-eyre = "0.6.12"
-thiserror = "2.0.17"
+[workspace.lints.rust]
+raw_borrows_via_references = "warn"
+
+# Cargo's own lint system (shipped in 1.100): the only unused-dependency
+# check. It runs as part of a normal all-targets `cargo check`/`clippy`.
+[workspace.lints.cargo]
+unused_dependencies = "warn"

@@ -5,6 +5,8 @@ edition.workspace = true
 authors.workspace = true
 license.workspace = true
 description = "Multi-timezone Time Management Web Application"
+rust-version.workspace = true
+repository.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -62,3 +64,6 @@ reload-port = 3001
 # Build features
 bin-features = []
 lib-features = []
+
+[lints]
+workspace = true
