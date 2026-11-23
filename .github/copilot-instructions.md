@@ -90,7 +90,7 @@ edition = "2024"
 leptos = "0.8.15"
 leptos_meta = "0.8.15"
 leptos_router = "0.8.15"
-leptos_axum = "0.8.15" 
+leptos_axum = "0.8.15"
 
 # CLI & Config
 clap = "4.5.54"

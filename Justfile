@@ -40,6 +40,10 @@ lint:
     cargo +nightly clippy --workspace -- -D warnings -A clippy::derive_partial_eq_without_eq -D clippy::unwrap_used -D clippy::uninlined_format_args
     just check-mutation-scope
 
+# Run the prek commit hooks on every tracked file (requires prek)
+hooks:
+  prek run --all-files
+
 # Run all tests
 test:
     cargo test --workspace --all-features
